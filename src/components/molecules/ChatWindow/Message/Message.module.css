@@ -6,4 +6,5 @@
 .username {
   display: inline-block;
   color: red;
+  font-weight: 700;
 }

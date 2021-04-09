@@ -31,11 +31,13 @@ const ChatWindow = (props: ChatWindowProps) => {
 
   return (
     <div className={s.chatWindow}>
-      <SimpleBar autoHide style={{ height: '100%' }} scrollableNodeProps={{ ref: chatWindowRef }}>
+      <SimpleBar
+        autoHide
+        style={{ height: '100%' }}
+        scrollableNodeProps={{ ref: chatWindowRef }}
+      >
         {messages.map((message) =>
-          <Message
-            message={message}
-          />
+          <Message message={message} key={message.id} />
         )}
       </SimpleBar>
     </div>

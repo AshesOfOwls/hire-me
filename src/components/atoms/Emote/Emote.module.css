@@ -1,0 +1,10 @@
+.emote {
+  display: inline-block;
+  margin: -.5rem 0;
+}
+
+.emote img {
+  vertical-align: middle;
+  display: inline-block;
+  margin: -.5rem 0;
+}
