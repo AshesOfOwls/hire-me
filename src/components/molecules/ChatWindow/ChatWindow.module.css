@@ -1,0 +1,20 @@
+.chatWindow {
+  outline: 1px solid purple;
+  height: 200px;
+  width: 300px;
+  overflow: auto;
+}
+
+.message {
+  padding: 5px 20px;
+  position: relative;
+}
+
+.username {
+  display: inline-block;
+  color: red;
+}
+
+.separator {
+
+}
