@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { Client } from 'tmi.js';
 import tmi from 'tmi.js';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 
-const client = new tmi.Client({
-	connection: { reconnect: true },
-	channels: [ 'ashesofowls' ]
-});
+let client: Client | null = null;
 
-client.connect();
+export interface TwitchChatProps {
+  stream: string,
+}
 
-const TwitchChat = () => {
+const TwitchChat = (props: TwitchChatProps) => {
+  const { stream } = props;
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
   
   useEffect(() => {
+    client = new tmi.Client({
+      connection: { reconnect: true },
+      channels: [stream]
+    });
+
+    client.connect();
+    
     client.on('message', (channel, tags, message, self) => {
       const newMessage: TwitchMessage = {
         id: tags.id,
@@ -28,10 +36,10 @@ const TwitchChat = () => {
     })
     
     return () => {
-      console.log("DISCONNECT")
+      if (!client) return;
       client.disconnect();
     };
-  }, []);
+  }, [stream]);
 
   return (
     <div>
