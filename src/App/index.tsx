@@ -4,7 +4,7 @@ import TwitchChat from 'components/organisms/TwitchChat';
 import s from './App.module.css';
 
 function App() {
-  const stream = 'ashesofowls';
+  const stream = 'cyr';
 
   return (
     <div className={s.app}>

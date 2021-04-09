@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
+import usePrevious from 'hooks/usePrevious';
+import SimpleBar from 'simplebar-react';
+import Message from './Message';
 
+import 'simplebar/dist/simplebar.min.css';
 import s from './ChatWindow.module.css';
 
 export interface ChatWindowProps {
@@ -9,18 +13,31 @@ export interface ChatWindowProps {
 
 const ChatWindow = (props: ChatWindowProps) => {
   const { messages } = props;
+
+  const previousMessageCount = usePrevious(messages.length);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
   
+  const scrollToBottom = () => {
+    if (!chatWindowRef.current) return;
+    
+    chatWindowRef.current.scrollTo(0, 99999);
+  }
+
+  useEffect(() => {
+    if (previousMessageCount !== messages.length) {
+      scrollToBottom();
+    }
+  }, [previousMessageCount, messages]);
+
   return (
     <div className={s.chatWindow}>
-      { messages.map((message) => (
-        <div className={s.message} key={message.id}>
-          <div className={s.username} style={{ color: message.usernameColor }}>
-            { message.username }
-          </div>
-          <span className={s.separator}>: </span>
-          <span>{ message.text }</span>
-        </div>
-      ))}
+      <SimpleBar autoHide style={{ height: '100%' }} scrollableNodeProps={{ ref: chatWindowRef }}>
+        {messages.map((message) =>
+          <Message
+            message={message}
+          />
+        )}
+      </SimpleBar>
     </div>
   );
 }

@@ -1,0 +1,9 @@
+.message {
+  padding: 5px 20px;
+  position: relative;
+}
+
+.username {
+  display: inline-block;
+  color: red;
+}
