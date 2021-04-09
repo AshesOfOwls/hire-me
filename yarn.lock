@@ -2938,6 +2938,11 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/tmi.js@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@types/tmi.js/-/tmi.js-1.7.1.tgz#d45b1eb2506fa7e0e173cd3a1317c018f9ee7d1a"
+  integrity sha512-sZ/4WlCFSKIp6sPwRMpBlSvARXMaBzIQuxLQL4v+Ymga3LiH+Xw6WuPN5odkNWDmjPVoLqSwEuCCVsFjM4c7Ug==
+
 "@types/uglify-js@*":
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@types/uglify-js/-/uglify-js-3.13.0.tgz#1cad8df1fb0b143c5aba08de5712ea9d1ff71124"
@@ -9597,7 +9602,7 @@ node-dir@^0.1.10:
   dependencies:
     minimatch "^3.0.2"
 
-node-fetch@^2.6.1:
+node-fetch@2.6.1, node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
@@ -13258,6 +13263,14 @@ tiny-emitter@^2.0.0:
   resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
   integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
 
+tmi.js@^1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/tmi.js/-/tmi.js-1.7.5.tgz#da5ce238b8bb38c01c3c6717b73441b9f1c8ae84"
+  integrity sha512-j3kAnJ8KkWbvwhKhQchleyzZEuPa/5rWdeV7MNBEYEAqGhbZuXR+FfI1QgKphYqUrJ4qFAB3WjHG2YlhGq3PDg==
+  dependencies:
+    node-fetch "2.6.1"
+    ws "7.4.3"
+
 tmpl@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
@@ -14396,6 +14409,11 @@ write-file-atomic@^3.0.0:
     is-typedarray "^1.0.0"
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
+
+ws@7.4.3:
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.3.tgz#1f9643de34a543b8edb124bdcbc457ae55a6e5cd"
+  integrity sha512-hr6vCR76GsossIRsr8OLR9acVVm1jyfEWvhbNjtgPOrfvAlKzvyeg/P6r8RuDjRyrcQoPQT7K0DGEPc7Ae6jzA==
 
 ws@^6.2.1:
   version "6.2.1"
