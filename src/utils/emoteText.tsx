@@ -6,14 +6,21 @@ export interface Props {
   emoteList: any
 };
 
-const emoteText = (props: Props): React.ReactNode[] => {
+const emoteText = (props: Props): { formatted: React.ReactNode[], emoteCount: number, wordCount: number } => {
   const { text, emoteList } = props;
+
+  let emoteCount = 0;
+  let wordCount = 0;
 
   const withEmotes = text.split(' ').map((word, i) => {
     const emote = emoteList.find((emote: any) => emote.code === word);
 
-    if (emote) { return <Emote src={emote.url} key={i + emote.code} />; }
+    if (emote) {
+      emoteCount++;
+      return <Emote src={emote.url} key={i + emote.code} />;
+    }
 
+    wordCount++
     return word;
   });
 
@@ -24,7 +31,7 @@ const emoteText = (props: Props): React.ReactNode[] => {
     withSpaces.push(' ');
   })
   
-  return withSpaces;
+  return { formatted: withSpaces, emoteCount, wordCount };
 };
 
 export default emoteText;

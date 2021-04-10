@@ -10,7 +10,9 @@ const useTwitchClient = () => {
     client.connect();
   }
 
-  return client;
+  const isClientReady = client.readyState() === 'OPEN';
+  
+  return { client, isClientReady };
 };
 
 export default useTwitchClient;

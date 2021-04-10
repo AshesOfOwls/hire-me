@@ -25,8 +25,8 @@ const Splitter = () => {
       </div>
 
       <div className={s.tabs}>
-        {tabs.map((tab) => 
-          <div className={s.tab}>
+        {tabs.map((tab, index) => 
+          <div className={s.tab} key={`${tab}-${index}`}>
             <h3>{ tab } Twitch Chat:</h3>
             <TwitchChat stream={tab} />
           </div>
