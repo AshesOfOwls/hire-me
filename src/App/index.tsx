@@ -1,15 +1,12 @@
 import React from 'react';
-import TwitchChat from 'components/organisms/TwitchChat';
+import Splitter from 'components/organisms/Splitter';
 
 import s from './App.module.css';
 
 function App() {
-  const stream = 'ludwig';
-
   return (
     <div className={s.app}>
-      <h3>{ stream } Twitch Chat:</h3>
-      <TwitchChat stream={stream} />
+      <Splitter />
     </div>
   );
 }

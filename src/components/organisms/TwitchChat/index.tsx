@@ -4,15 +4,16 @@ import { TwitchMessage } from 'types/TwitchMessage';
 import emoteFetcher from 'utils/emoteFetcher';
 import emoteText from 'utils/emoteText';
 import ChatWindow from 'components/molecules/ChatWindow';
+import useTwitchClient from 'hooks/useTwitchClient';
 import { format, fromUnixTime } from 'date-fns';
 
 const MESSAGE_THESHOLD = 50;
 const MAX_MESSAGES = 3000;
 
-const client = new tmi.Client({
-  connection: { reconnect: true },
-  channels: []
-});
+// const client = new tmi.Client({
+//   connection: { reconnect: true },
+//   channels: []
+// });
 
 export interface TwitchChatProps {
   stream: string,
@@ -25,24 +26,28 @@ const TwitchChat = (props: TwitchChatProps) => {
   const [channelEmotes, setChannelEmotes] = useState([]);
   const [hasFetchedEmotes, setHasFetchedEmotes] = useState(false);
   
+  const client = useTwitchClient();
+  const isClientReady = client.readyState() === 'OPEN';
+
   useEffect(() => {
-    client.connect().then(() => {
-      client.join(stream);
-    });
+    if (!isClientReady) return;
+
+    client.join(stream);
     
     return () => {
       if (!client) return;
       client.part(stream);
       client.disconnect();
     };
-  }, [stream]);
+  }, [stream, client, isClientReady]);
 
   useEffect(() => {
     if (!hasFetchedEmotes || !channelEmotes.length) return;
 
     client.on('message', (channel, tags, message, self) => {
+      if (channel !== `#${stream}`) return;
+      
       const unixTimestamp = parseInt(tags['tmi-sent-ts'] || '0') / 1000;
-
       const newMessage: TwitchMessage = {
         id: tags.id,
         text: message,

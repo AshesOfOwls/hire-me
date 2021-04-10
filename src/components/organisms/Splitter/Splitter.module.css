@@ -1,0 +1,9 @@
+.splitter {}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1 1 auto;
+}
