@@ -17,9 +17,11 @@ const TwitchChat = (props: TwitchChatProps) => {
   const { stream } = props;
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
   const [messageCount, setMessageCount] = useState(0);
-  const [emoteThreshold, setEmoteThreshold] = useState(1);
+  const [minEmoteThreshold, setMinEmoteThreshold] = useState(0);
+  const [maxEmoteThreshold, setMaxEmoteThreshold] = useState(10);
   const [channelEmotes, setChannelEmotes] = useState([]);
   const [hasFetchedEmotes, setHasFetchedEmotes] = useState(false);
+  const [filterText, setFilterText] = useState<string>('');
 
   const { client, isClientReady } = useTwitchClient();
 
@@ -75,13 +77,35 @@ const TwitchChat = (props: TwitchChatProps) => {
       setHasFetchedEmotes(true);
       setChannelEmotes(emotes);
     });
-  }, [stream, hasFetchedEmotes])
+  }, [stream, hasFetchedEmotes]);
 
-  const onChangeThreshold = (e: React.FormEvent<HTMLInputElement>) => {
-    setEmoteThreshold(parseInt(e.currentTarget.value) / 10);
+  const onChangeMinThreshold = (e: React.FormEvent<HTMLInputElement>) => {
+    const val = parseInt(e.currentTarget.value);
+
+    if (val >= maxEmoteThreshold) return;
+    
+    setMinEmoteThreshold(parseInt(e.currentTarget.value));
   };
 
-  const filteredMessages = messages.filter((m) => m.emotePercentage <= emoteThreshold);
+  const onChangeMaxThreshold = (e: React.FormEvent<HTMLInputElement>) => {
+    const val = parseInt(e.currentTarget.value);
+
+    if (val <= minEmoteThreshold) return;
+
+    setMaxEmoteThreshold(parseInt(e.currentTarget.value));
+  };
+
+  const onChangeFilterText = (e: React.FormEvent<HTMLInputElement>) => {
+    setFilterText(e.currentTarget.value);
+  }
+
+  const filteredMessages = messages.filter((m) => {
+    const emoteThreshold = m.emotePercentage * 10;
+    const meetsEmoteThreshold = emoteThreshold <= maxEmoteThreshold && emoteThreshold >= minEmoteThreshold;
+    const meetsFilterThreshold = m.text.match(filterText);
+
+    return meetsEmoteThreshold && meetsFilterThreshold;
+  });
 
   return (
     <div>
@@ -89,7 +113,16 @@ const TwitchChat = (props: TwitchChatProps) => {
       <div>Current messages: { messages.length }</div>
       <div>
         Emote threshold:
-        <input type="range" value={emoteThreshold * 10} min={0} max={10} onChange={onChangeThreshold} step={1} />
+        <div>
+          Min: <input type="range" value={minEmoteThreshold} min={0} max={10} onChange={onChangeMinThreshold} step={1} />
+        </div>
+        <div>
+          Max: <input type="range" value={maxEmoteThreshold} min={0} max={10} onChange={onChangeMaxThreshold} step={1} />
+        </div>
+      </div>
+      <div>
+        Chat Filter:
+        <input value={filterText} onChange={onChangeFilterText} />
       </div>
       <ChatWindow messages={filteredMessages} />
     </div>

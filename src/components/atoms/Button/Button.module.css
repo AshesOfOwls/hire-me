@@ -2,4 +2,15 @@
   background: #339900;
   border-radius: 3px;
   padding: 5px;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #33CC33;
+}
+
+.warning {
+  background: #CC3333;
 }
