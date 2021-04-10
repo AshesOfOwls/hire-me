@@ -6,4 +6,5 @@ export interface TwitchMessage {
   emoteText: React.ReactNode
   username: string | undefined
   usernameColor?: string
+  time: string,
 }

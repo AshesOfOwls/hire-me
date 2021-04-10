@@ -4,9 +4,10 @@ import { TwitchMessage } from 'types/TwitchMessage';
 import emoteFetcher from 'utils/emoteFetcher';
 import emoteText from 'utils/emoteText';
 import ChatWindow from 'components/molecules/ChatWindow';
+import { format, fromUnixTime } from 'date-fns';
 
 const MESSAGE_THESHOLD = 50;
-const MAX_MESSAGES = 200;
+const MAX_MESSAGES = 3000;
 
 const client = new tmi.Client({
   connection: { reconnect: true },
@@ -20,6 +21,7 @@ export interface TwitchChatProps {
 const TwitchChat = (props: TwitchChatProps) => {
   const { stream } = props;
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
+  const [messageCount, setMessageCount] = useState(0);
   const [channelEmotes, setChannelEmotes] = useState([]);
   const [hasFetchedEmotes, setHasFetchedEmotes] = useState(false);
   
@@ -39,13 +41,18 @@ const TwitchChat = (props: TwitchChatProps) => {
     if (!hasFetchedEmotes || !channelEmotes.length) return;
 
     client.on('message', (channel, tags, message, self) => {
+      const unixTimestamp = parseInt(tags['tmi-sent-ts'] || '0') / 1000;
+
       const newMessage: TwitchMessage = {
         id: tags.id,
         text: message,
         emoteText: emoteText({ text: message, emoteList: channelEmotes }),
         username: tags['display-name'],
         usernameColor: tags.color,
+        time: format(fromUnixTime(unixTimestamp), 'hh:mm'),
       };
+
+      setMessageCount(m => m + 1);
 
       setMessages(m => {
         let oldMessages = m;
@@ -70,7 +77,8 @@ const TwitchChat = (props: TwitchChatProps) => {
 
   return (
     <div>
-      Message count: { messages.length }
+      <div>Total messages: { messageCount }</div>
+      <div>Current messages: { messages.length }</div>
       <ChatWindow messages={messages} />
     </div>
   )

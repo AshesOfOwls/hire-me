@@ -1,10 +1,17 @@
 .message {
   padding: 5px 20px;
   position: relative;
+  word-wrap: break-word;
+  line-height: 20px;
 }
 
 .username {
   display: inline-block;
   color: red;
   font-weight: 700;
+}
+
+.timestamp {
+  color: #adadb8;
+  margin-right: .5em;
 }

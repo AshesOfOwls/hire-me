@@ -9,9 +9,10 @@ export interface MessageProps {
 
 const Message = React.memo((props: MessageProps) => {
   const { message } = props;
-  
+
   return (
     <div className={s.message}>
+      <span className={s.timestamp}>{ message.time }</span>
       <div className={s.username} style={{ color: message.usernameColor }}>
         { message.username }
       </div>

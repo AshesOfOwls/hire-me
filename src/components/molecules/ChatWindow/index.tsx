@@ -20,7 +20,7 @@ const ChatWindow = (props: ChatWindowProps) => {
   const scrollToBottom = () => {
     if (!chatWindowRef.current) return;
     
-    chatWindowRef.current.scrollTo(0, 99999);
+    chatWindowRef.current.scrollTo(0, 9999999);
   }
 
   useEffect(() => {
