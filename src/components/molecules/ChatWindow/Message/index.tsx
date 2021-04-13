@@ -19,6 +19,8 @@ const Message = React.memo((props: MessageProps) => {
     return fragment.text;
   });
 
+  const isAction = message.messageType === 'action';
+
   return (
     <div className={s.message}>
       <span className={s.timestamp}>{ message.time }</span>
@@ -26,7 +28,9 @@ const Message = React.memo((props: MessageProps) => {
         { message.username }
       </div>
       <span className={s.separator}>: </span>
-      <span>{ text }</span>
+      <span style={{ color: isAction ? message.usernameColor : 'inherit' }}>
+        { text }
+      </span>
     </div>
   );
 });

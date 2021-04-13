@@ -3,7 +3,7 @@ import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 
 const MESSAGE_THESHOLD = 50;
-const MAX_MESSAGES = 1000;
+const MAX_MESSAGES = 2000;
 
 export interface TwitchChatProps {
   stream: string,
@@ -12,7 +12,7 @@ export interface TwitchChatProps {
 
 const TwitchChat = (props: TwitchChatProps) => {
   const { stream, messages } = props;
-  const [messageCount, setMessageCount] = useState(0);
+
   const [minEmoteThreshold, setMinEmoteThreshold] = useState(0);
   const [maxEmoteThreshold, setMaxEmoteThreshold] = useState(10);
   const [filterText, setFilterText] = useState<string>('');
@@ -41,7 +41,7 @@ const TwitchChat = (props: TwitchChatProps) => {
   // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
-  const filteredMessages = messages.filter((m) => {
+  let filteredMessages = messages.filter((m) => {
     if (m.channel !== stream) return false;
 
     const emoteThreshold = m.emotePercentage * 10;
@@ -56,10 +56,14 @@ const TwitchChat = (props: TwitchChatProps) => {
     return meetsEmoteThreshold && meetsFilterThreshold;
   });
 
+  if (filteredMessages.length % MAX_MESSAGES > MESSAGE_THESHOLD) {
+    filteredMessages = filteredMessages.splice(filteredMessages.length - MAX_MESSAGES, MAX_MESSAGES);
+  }
+
   return (
     <div>
-      <div>Total messages: { messageCount }</div>
-      <div>Current messages: { messages.length }</div>
+      <div>Total messages: { messages.length }</div>
+      <div>Current messages: { filteredMessages.length }</div>
       <div>
         Emote threshold:
         <div>

@@ -5,6 +5,7 @@ export interface TwitchMessage {
   username: string | undefined
   usernameColor?: string
   time: string
+  messageType?: string
   emotePercentage: number
   channel: string
 }

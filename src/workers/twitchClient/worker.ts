@@ -41,6 +41,7 @@ const twitchClient: TwitchClientWorker = {
       const newMessage: TwitchMessage = {
         id: tags.id,
         channel: channel.replace('#', ''),
+        messageType: tags['message-type'],
         text: message,
         emoteText: formatted,
         username: tags['display-name'],
