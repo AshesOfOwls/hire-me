@@ -1,11 +1,10 @@
-import React from "react";
-
 export interface TwitchMessage {
   id?: string
   text: string
-  emoteText: React.ReactNode
+  emoteText: any
   username: string | undefined
   usernameColor?: string
   time: string
   emotePercentage: number
+  channel: string
 }

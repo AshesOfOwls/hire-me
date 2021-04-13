@@ -19,9 +19,9 @@ const getBTTVChannelList = async (channel: String) => {
   const userMeta = await fetch(`https://api.frankerfacez.com/v1/_room/${channel}`).then((res) => res.json());
   if (!userMeta.room) return [];
   const emoteList = await fetch(`https://api.betterttv.net/3/cached/users/twitch/${userMeta.room.twitch_id}`).then((res) => res.json());
-  if (!emoteList.emotes) return [];
+  if (!emoteList.channelEmotes) return [];
   let bttvEmotesArr: any = [];
-  emoteList.emotes.map((data: any) =>
+  emoteList.channelEmotes.map((data: any) =>
     bttvEmotesArr.push({
       code: data.code,
       url: `https://cdn.betterttv.net/emote/${data.id}/1x`,
@@ -36,6 +36,7 @@ const getFFZChannelList = async (channel: String) => {
   const emoteSets = Object.keys(emoteList.sets);
   let ffzEmotesArr: any = [];
   emoteSets.map((e: any) => emoteList.sets[e].emoticons.map((em: any) => ffzEmotesArr.push({ code: em.name, url: `https:${em.urls[1]}` })));
+
   return ffzEmotesArr;
 };
 

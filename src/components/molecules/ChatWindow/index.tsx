@@ -2,10 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
 import usePrevious from 'hooks/usePrevious';
 import SimpleBar from 'simplebar-react';
-import Message from './Message';
+import MessageChunk from './MessageChunk';
 
 import 'simplebar/dist/simplebar.min.css';
 import s from './ChatWindow.module.css';
+
+const MESSAGE_CHUNK_SIZE = 50;
 
 export interface ChatWindowProps {
   messages: TwitchMessage[],
@@ -20,7 +22,7 @@ const ChatWindow = (props: ChatWindowProps) => {
   const scrollToBottom = () => {
     if (!chatWindowRef.current) return;
     
-    chatWindowRef.current.scrollTo(0, 9999999);
+    chatWindowRef.current.scrollTop = 9999999;
   }
 
   useEffect(() => {
@@ -29,6 +31,13 @@ const ChatWindow = (props: ChatWindowProps) => {
     }
   }, [previousMessageCount, messages]);
 
+  const splitMessages = messages.reduce((acc: any, cur: any, index) => {
+    const group = Math.floor(index / MESSAGE_CHUNK_SIZE);
+    (acc[group] = acc[group] || []).push(cur);
+
+    return acc;
+  }, [])
+
   return (
     <div className={s.chatWindow}>
       <SimpleBar
@@ -36,12 +45,12 @@ const ChatWindow = (props: ChatWindowProps) => {
         style={{ height: '100%' }}
         scrollableNodeProps={{ ref: chatWindowRef }}
       >
-        {messages.map((message) =>
-          <Message message={message} key={message.id} />
-        )}
+        {splitMessages.map((messages: any, index: number) => (
+          <MessageChunk messages={messages} key={`chunk${index}`} />
+        ))}
       </SimpleBar>
     </div>
   );
-}
+};
 
 export default ChatWindow;

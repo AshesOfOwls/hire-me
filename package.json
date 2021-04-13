@@ -11,6 +11,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "classnames": "^2.3.1",
+    "comlink": "^4.3.0",
     "date-fns": "^2.20.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -65,7 +66,8 @@
     "@storybook/node-logger": "^6.2.5",
     "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.2.5",
-    "@types/tmi.js": "^1.7.1"
+    "@types/tmi.js": "^1.7.1",
+    "comlink-loader": "^2.0.0"
   },
   "resolutions": {
     "babel-loader": "8.1.0"

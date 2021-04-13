@@ -11,7 +11,7 @@ const useTwitchClient = () => {
   }
 
   const isClientReady = client.readyState() === 'OPEN';
-  
+
   return { client, isClientReady };
 };
 
