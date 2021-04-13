@@ -63,8 +63,8 @@ const twitchClient: TwitchClientWorker = {
 
     this.fetchEmotes(channel, () => client.join(channel));
   },
-  fetchEmotes(channel: string, callback) {
-    emoteFetcher(channel).then((emotes) => {
+  async fetchEmotes(channel: string, callback) {
+    await emoteFetcher(channel).then((emotes) => {
       this.channelEmotes = [...this.channelEmotes, ...emotes];
       callback();
     });

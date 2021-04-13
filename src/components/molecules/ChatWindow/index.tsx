@@ -9,7 +9,7 @@ import 'simplebar/dist/simplebar.min.css';
 import s from './ChatWindow.module.css';
 
 const MESSAGE_CHUNK_SIZE = 50;
-const PAUSE_THESHOLD = 30;
+const PAUSE_THESHOLD = 50;
 
 export interface ChatWindowProps {
   messages: TwitchMessage[],

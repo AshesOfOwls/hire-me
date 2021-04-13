@@ -27,7 +27,7 @@ const Message = React.memo((props: MessageProps) => {
       <div className={s.username} style={{ color: message.usernameColor }}>
         { message.username }
       </div>
-      <span className={s.separator}>: </span>
+      <span className={s.separator}>{!isAction && ':'} </span>
       <span style={{ color: isAction ? message.usernameColor : 'inherit' }}>
         { text }
       </span>
