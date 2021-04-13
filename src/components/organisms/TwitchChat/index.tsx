@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 
-const MESSAGE_THESHOLD = 50;
-const MAX_MESSAGES = 2000;
+const MESSAGE_THRESHOLD = 50;
+const MAX_MESSAGES = 100;
 
 export interface TwitchChatProps {
   stream: string,
@@ -56,9 +56,9 @@ const TwitchChat = (props: TwitchChatProps) => {
     return meetsEmoteThreshold && meetsFilterThreshold;
   });
 
-  if (filteredMessages.length % MAX_MESSAGES > MESSAGE_THESHOLD) {
-    filteredMessages = filteredMessages.splice(filteredMessages.length - MAX_MESSAGES, MAX_MESSAGES);
-  }
+  // if (filteredMessages.length > MAX_MESSAGES) {
+  //   filteredMessages.splice(filteredMessages.length - MAX_MESSAGES + MESSAGE_THRESHOLD, MAX_MESSAGES);
+  // }
 
   return (
     <div>

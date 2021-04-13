@@ -7,6 +7,8 @@ import Worker from 'workers/twitchClient';
 
 import s from './Splitter.module.css';
 
+const TESTING_STREAM = 'hasanabi';
+
 const worker = new Worker();
 
 const init = async (callback: any) => {
@@ -18,11 +20,11 @@ const subscribe = async (callback: any) => {
 
 const Splitter = () => {
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
-  const [tabs, setTabs] = useState<string[]>(['xqcow']);
+  const [tabs, setTabs] = useState<string[]>([TESTING_STREAM]);
   const [streamInputValue, setStreamInputValue] = useState('');
 
   useEffect(() => {
-    init(() => worker.join('xqcow'));
+    init(() => worker.join(TESTING_STREAM));
     subscribe((message: TwitchMessage) => setMessages(m => [...m, message]));
   });
   
