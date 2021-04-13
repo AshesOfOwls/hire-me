@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
+import classnames from 'classnames';
 import usePrevious from 'hooks/usePrevious';
 import SimpleBar from 'simplebar-react';
 import MessageChunk from './MessageChunk';
@@ -20,7 +21,7 @@ const ChatWindow = (props: ChatWindowProps) => {
   const [isPaused, setIsPaused] = useState(false);
   const previousMessageCount = usePrevious(messages.length);
   const chatWindowRef = useRef<HTMLDivElement>(null);
-  
+
   const scrollToBottom = () => {
     if (!chatWindowRef.current) return;
     
@@ -69,6 +70,11 @@ const ChatWindow = (props: ChatWindowProps) => {
     return acc;
   }, [])
 
+  const unPause = () => {
+    scrollToBottom();
+    setIsPaused(false);
+  }
+  
   return (
     <div className={s.chatWindow}>
       <SimpleBar
@@ -80,6 +86,12 @@ const ChatWindow = (props: ChatWindowProps) => {
           <MessageChunk messages={messages} key={`chunk${index}`} />
         ))}
       </SimpleBar>
+      <div
+        className={classnames(s.pauseMarker, { [s.isVisible]: isPaused })}
+        onClick={unPause}
+      >
+        Chat paused due to scroll.
+      </div>
     </div>
   );
 };
