@@ -33,12 +33,12 @@ const Splitter = () => {
   const addTab = (tab: string) => {
     worker.join(tab);
     setTabs([...tabs, tab]);
-  }
-  
+  };
+
   const onAddTab = () => {
     addTab(streamInputValue);
     setStreamInputValue('');
-  }
+  };
 
   const onDuplicate = (tab: string) => {
     addTab(tab);

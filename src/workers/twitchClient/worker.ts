@@ -46,9 +46,9 @@ const twitchClient: TwitchClientWorker = {
         username: tags['display-name'],
         usernameColor: tags.color,
         time: format(fromUnixTime(unixTimestamp), 'hh:mm'),
-        emotePercentage: emoteCount ? (emoteCount + wordCount) / emoteCount : 0,
+        emotePercentage: emoteCount ? emoteCount / (emoteCount + wordCount) : 0,
       };
-      
+
       const newMessages = [...this.messages, newMessage];
       this.messages = newMessages;
       callback(newMessage);

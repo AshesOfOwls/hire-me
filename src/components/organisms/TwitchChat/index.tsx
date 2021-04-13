@@ -21,7 +21,7 @@ const TwitchChat = (props: TwitchChatProps) => {
     const val = parseInt(e.currentTarget.value);
 
     if (val >= maxEmoteThreshold) return;
-    
+
     setMinEmoteThreshold(parseInt(e.currentTarget.value));
   };
 
@@ -37,6 +37,10 @@ const TwitchChat = (props: TwitchChatProps) => {
     setFilterText(e.currentTarget.value);
   }
 
+  // MOVE TO WORKER!!!!
+  // MOVE TO WORKER!!!!
+  // MOVE TO WORKER!!!!
+  // MOVE TO WORKER!!!!
   const filteredMessages = messages.filter((m) => {
     if (m.channel !== stream) return false;
 
@@ -47,6 +51,10 @@ const TwitchChat = (props: TwitchChatProps) => {
       meetsFilterThreshold = Boolean(m.text.match(filterText));
     } catch {
       meetsFilterThreshold = true;
+    }
+    
+    if (!meetsEmoteThreshold) {
+      console.log("!!!!!!", minEmoteThreshold, emoteThreshold, maxEmoteThreshold)
     }
 
     return meetsEmoteThreshold && meetsFilterThreshold;
