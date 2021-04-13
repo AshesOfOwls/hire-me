@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
-import emoteFetcher from 'utils/emoteFetcher';
-import emoteText from 'utils/emoteText';
 import ChatWindow from 'components/molecules/ChatWindow';
-import useTwitchClient from 'hooks/useTwitchClient';
-import { format, fromUnixTime } from 'date-fns';
 
 const MESSAGE_THESHOLD = 50;
 const MAX_MESSAGES = 1000;

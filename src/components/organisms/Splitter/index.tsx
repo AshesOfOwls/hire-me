@@ -23,11 +23,7 @@ const Splitter = () => {
 
   useEffect(() => {
     init(() => worker.join('xqcow'));
-    subscribe((message: TwitchMessage) => {
-      console.time('1');
-      setMessages(m => [...m, message])
-      console.timeEnd('1');
-    });
+    subscribe((message: TwitchMessage) => setMessages(m => [...m, message]));
   });
   
   const onInputChange = (e: React.FormEvent<HTMLInputElement>) => {
