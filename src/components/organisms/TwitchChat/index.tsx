@@ -52,10 +52,6 @@ const TwitchChat = (props: TwitchChatProps) => {
     } catch {
       meetsFilterThreshold = true;
     }
-    
-    if (!meetsEmoteThreshold) {
-      console.log("!!!!!!", minEmoteThreshold, emoteThreshold, maxEmoteThreshold)
-    }
 
     return meetsEmoteThreshold && meetsFilterThreshold;
   });
