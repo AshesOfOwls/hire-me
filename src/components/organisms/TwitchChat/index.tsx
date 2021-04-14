@@ -13,47 +13,21 @@ export interface TwitchChatProps {
   stream: string,
   messages: TwitchMessage[],
   metadata?: any,
+  onClone: (filters: any) => void,
+  preFilters?: any,
 }
 
 const TwitchChat = (props: TwitchChatProps) => {
-  const { stream, messages, metadata } = props;
+  const { stream, messages, metadata, onClone, preFilters } = props;
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState(preFilters || {
     maxMessages: MAX_MESSAGES,
     chunkSize: CHUNK_SIZE,
     minEmoteThreshold: 0,
     maxEmoteThreshold: 10,
     filterText: '',
   });
-  // const [chunkSize, setChunkSize] = useState(CHUNK_SIZE);
-  // const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES);
-  // const [minEmoteThreshold, setMinEmoteThreshold] = useState(0);
-  // const [maxEmoteThreshold, setMaxEmoteThreshold] = useState(10);
-  // const [filterText, setFilterText] = useState<string>('');
 
-  // const onChangeMinThreshold = (e: React.FormEvent<HTMLInputElement>) => {
-  //   const val = parseInt(e.currentTarget.value);
-
-  //   if (val >= maxEmoteThreshold) return;
-
-  //   setMinEmoteThreshold(parseInt(e.currentTarget.value));
-  // };
-
-  // const onChangeMaxThreshold = (e: React.FormEvent<HTMLInputElement>) => {
-  //   const val = parseInt(e.currentTarget.value);
-
-  //   if (val <= minEmoteThreshold) return;
-
-  //   setMaxEmoteThreshold(parseInt(e.currentTarget.value));
-  // };
-
-  // const onChangeFilterText = (e: React.FormEvent<HTMLInputElement>) => {
-  //   setFilterText(e.currentTarget.value);
-  // }
-
-  // MOVE TO WORKER!!!!
-  // MOVE TO WORKER!!!!
-  // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
   const { maxMessages, chunkSize, maxEmoteThreshold, minEmoteThreshold, filterText } = filters;
   
@@ -81,6 +55,13 @@ const TwitchChat = (props: TwitchChatProps) => {
     setFilters(newFilters);
   };
 
+  const handleClone = (filters: any) => {
+    onClone({
+      channel: stream,
+      filters,
+    });
+  };
+
   return (
     <div>
       <div>Displayed/Total messages: { filteredMessages.length } / { messages.length }</div>
@@ -94,7 +75,11 @@ const TwitchChat = (props: TwitchChatProps) => {
           style={{ width: '130px' }}
         />
       </div>
-      <Filters onChange={onChangeFilters} {...filters} />
+      <Filters
+        onChange={onChangeFilters}
+        onClone={handleClone}
+        {...filters}
+      />
       <ChatWindow messages={filteredMessages} chunkSize={chunkSize} />
     </div>
   )

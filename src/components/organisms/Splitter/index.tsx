@@ -11,6 +11,7 @@ import s from './Splitter.module.css';
 export interface SplitterTab {
   id: string,
   channel: string,
+  filters?: any,
 }
 
 const INITIAL_TAB: SplitterTab = {
@@ -70,12 +71,13 @@ const Splitter = () => {
     setStreamInputValue(e.currentTarget.value);
   };
 
-  const addTab = (channel: string) => {
+  const addTab = (channel: string, filters?: any) => {
     if (!worker) return;
 
     const newTab: SplitterTab = {
       id: uuidv4(),
       channel,
+      filters,
     }
 
     worker.join(channel);
@@ -97,6 +99,10 @@ const Splitter = () => {
     setTabs(newTabs);
   };
 
+  const onClone = (clonedTab: any) => {
+    addTab(clonedTab.channel, clonedTab.filters);
+  };
+
   return (
     <div className={s.splitter}>
       <div className={s.options}>
@@ -110,7 +116,13 @@ const Splitter = () => {
             <h3>{ tab.channel } Twitch Chat:</h3>
             <Button onClick={() => onDuplicate(tab.channel)}>New {tab.channel} tab</Button>
             <Button onClick={() => onDeleteTab(index)} type="warning">Delete</Button>
-            <TwitchChat stream={tab.channel} messages={messages} metadata={metadata[tab.channel]} />
+            <TwitchChat
+              stream={tab.channel}
+              messages={messages}
+              metadata={metadata[tab.channel]}
+              onClone={onClone}
+              preFilters={tab.filters}
+            />
           </div>
         )}
       </div>

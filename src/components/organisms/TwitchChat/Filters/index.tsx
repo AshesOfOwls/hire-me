@@ -13,6 +13,7 @@ export interface FiltersProps {
   maxEmoteThreshold: number
   filterText: string
   onChange: (filters: any) => void,
+  onClone: (filters: any) => void,
 }
 
 const Filters = React.memo((props: FiltersProps) => {
@@ -23,6 +24,7 @@ const Filters = React.memo((props: FiltersProps) => {
     maxEmoteThreshold,
     filterText,
     onChange,
+    onClone,
   } = props;
   
   const [showFilters, setShowFilters] = useState(false);
@@ -83,8 +85,22 @@ const Filters = React.memo((props: FiltersProps) => {
     handleActionChange({ filterText });
   };
 
+  const handleClone = () => {
+    onClone({
+      maxMessages,
+      chunkSize,
+      minEmoteThreshold,
+      maxEmoteThreshold,
+      filterText,
+    });
+  };
+
   return (
     <div className={s.filtersWrapper}>
+      <Button onClick={handleClone} type="wrapper">
+        <Icon name="clone" />
+      </Button>
+
       <Button onClick={toggleFilters} type="wrapper">
         <Icon name="filter" />
       </Button>
