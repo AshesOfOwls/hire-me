@@ -26,10 +26,14 @@ const init = async (callback: any) => {
 const subscribe = async (callback: any) => {
   worker.subscribe(Comlink.proxy(callback));
 }
+const subscribeToMetadata = async (callback: any) => {
+  worker.subscribeToMetadata(Comlink.proxy(callback));
+}
 
 const Splitter = () => {
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
   const [tabs, setTabs] = useState<SplitterTab[]>([INITIAL_TAB]);
+  const [metadata, setMetadata]: any = useState({});
   const [streamInputValue, setStreamInputValue] = useState('');
 
   useEffect(() => {
@@ -39,6 +43,7 @@ const Splitter = () => {
       uniqueTabs.forEach((tab) => worker.join(tab));
     });
     subscribe((message: TwitchMessage) => setMessages(m => [...m, message]));
+    subscribeToMetadata((metadata: any) => setMetadata(metadata));
   });
   
   const onInputChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -83,7 +88,7 @@ const Splitter = () => {
             <h3>{ tab.channel } Twitch Chat:</h3>
             <Button onClick={() => onDuplicate(tab.channel)}>New {tab.channel} tab</Button>
             <Button onClick={() => onDeleteTab(index)} type="warning">Delete</Button>
-            <TwitchChat stream={tab.channel} messages={messages} />
+            <TwitchChat stream={tab.channel} messages={messages} metadata={metadata[tab.channel]} />
           </div>
         )}
       </div>

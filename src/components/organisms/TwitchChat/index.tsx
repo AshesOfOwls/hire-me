@@ -8,10 +8,11 @@ const MAX_MESSAGES = 1000;
 export interface TwitchChatProps {
   stream: string,
   messages: TwitchMessage[],
+  metadata?: any,
 }
 
 const TwitchChat = (props: TwitchChatProps) => {
-  const { stream, messages } = props;
+  const { stream, messages, metadata } = props;
 
   const [chunkSize, setChunkSize] = useState(CHUNK_SIZE);
   const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES);
@@ -63,8 +64,8 @@ const TwitchChat = (props: TwitchChatProps) => {
 
   return (
     <div>
-      <div>Total messages: { messages.length }</div>
-      <div>Current messages: { filteredMessages.length }</div>
+      <div>Displayed/Total messages: { filteredMessages.length } / { messages.length }</div>
+      <div>POGS Per Minute (PPM): { metadata ? metadata.pogsPerMinute : 0 }</div>
       <div>MAX: <input type="number" value={maxMessages} onChange={(e) => setMaxMessages(parseInt(e.currentTarget.value) || 1)} /></div>
       <div>CHUNK SIZE: <input type="number" value={chunkSize} onChange={(e) => setChunkSize(parseInt(e.currentTarget.value) || 1)} /></div>
       <div>

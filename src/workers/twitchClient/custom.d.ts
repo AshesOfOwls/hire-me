@@ -4,7 +4,8 @@ declare module 'comlink-loader!*' {
 
     // Add any custom functions to this class.
     // Make note that the return type needs to be wrapped in a promise.
-    subscribe(channels: string[]): Promise<string>;
+    subscribe(callback: any): Promise<string>;
+    subscribeToMetadata(callback: any): Promise<string>;
     join(channel: string): Promise<string>;
     init(callback: any): Promise<string>;
   }
