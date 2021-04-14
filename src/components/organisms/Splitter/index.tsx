@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import * as Comlink from 'comlink';
 import TwitchChat from 'components/organisms/TwitchChat';
 import { TwitchMessage } from 'types/TwitchMessage';
@@ -7,7 +8,15 @@ import Worker from 'workers/twitchClient';
 
 import s from './Splitter.module.css';
 
-const TESTING_STREAM = 'xqcow';
+export interface SplitterTab {
+  id: string,
+  channel: string,
+}
+
+const INITIAL_TAB: SplitterTab = {
+  id: uuidv4(),
+  channel: 'xqcow',
+}
 
 const worker = new Worker();
 
@@ -20,21 +29,30 @@ const subscribe = async (callback: any) => {
 
 const Splitter = () => {
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
-  const [tabs, setTabs] = useState<string[]>([TESTING_STREAM]);
+  const [tabs, setTabs] = useState<SplitterTab[]>([INITIAL_TAB]);
   const [streamInputValue, setStreamInputValue] = useState('');
 
   useEffect(() => {
-    init(() => worker.join(TESTING_STREAM));
+    init(() => {
+      // @ts-ignore
+      const uniqueTabs = [...new Set(tabs.map((tab) => tab.channel))];
+      uniqueTabs.forEach((tab) => worker.join(tab));
+    });
     subscribe((message: TwitchMessage) => setMessages(m => [...m, message]));
   });
   
   const onInputChange = (e: React.FormEvent<HTMLInputElement>) => {
     setStreamInputValue(e.currentTarget.value);
   };
-  
-  const addTab = (tab: string) => {
-    worker.join(tab);
-    setTabs([...tabs, tab]);
+
+  const addTab = (channel: string) => {
+    const newTab: SplitterTab = {
+      id: uuidv4(),
+      channel,
+    }
+
+    worker.join(channel);
+    setTabs([...tabs, newTab]);
   };
 
   const onAddTab = () => {
@@ -47,8 +65,8 @@ const Splitter = () => {
   };
 
   const onDeleteTab = (index: number) => {
-    const newTabs = tabs.splice(index, 1);
-
+    const newTabs = [...tabs]
+    newTabs.splice(index, 1);
     setTabs(newTabs);
   };
 
@@ -61,11 +79,11 @@ const Splitter = () => {
 
       <div className={s.tabs}>
         {tabs.map((tab, index) => 
-          <div className={s.tab} key={`${tab}-${index}`}>
-            <h3>{ tab } Twitch Chat:</h3>
-            <Button onClick={() => onDuplicate(tab)}>New {tab} tab</Button>
+          <div className={s.tab} key={tab.id}>
+            <h3>{ tab.channel } Twitch Chat:</h3>
+            <Button onClick={() => onDuplicate(tab.channel)}>New {tab.channel} tab</Button>
             <Button onClick={() => onDeleteTab(index)} type="warning">Delete</Button>
-            <TwitchChat stream={tab} messages={messages} />
+            <TwitchChat stream={tab.channel} messages={messages} />
           </div>
         )}
       </div>
