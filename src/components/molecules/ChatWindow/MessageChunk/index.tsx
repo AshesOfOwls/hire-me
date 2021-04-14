@@ -7,7 +7,7 @@ export interface MessageGroupProps {
 }
 
 const areEqual = (prevProps: any, nextProps: any) => (
-  prevProps.messages.length === nextProps.messages.length
+  prevProps.messages.map((m: any) => m.id).join() === nextProps.messages.map((m: any) => m.id).join()
 );
 
 const MessageGroup = React.memo((props: MessageGroupProps) => {

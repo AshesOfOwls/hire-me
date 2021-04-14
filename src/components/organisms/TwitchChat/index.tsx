@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 
-const MESSAGE_THRESHOLD = 50;
-const MAX_MESSAGES = 100;
+const CHUNK_SIZE = 50;
+const MAX_MESSAGES = 1000;
 
 export interface TwitchChatProps {
   stream: string,
@@ -13,6 +13,8 @@ export interface TwitchChatProps {
 const TwitchChat = (props: TwitchChatProps) => {
   const { stream, messages } = props;
 
+  const [chunkSize, setChunkSize] = useState(CHUNK_SIZE);
+  const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES);
   const [minEmoteThreshold, setMinEmoteThreshold] = useState(0);
   const [maxEmoteThreshold, setMaxEmoteThreshold] = useState(10);
   const [filterText, setFilterText] = useState<string>('');
@@ -42,8 +44,8 @@ const TwitchChat = (props: TwitchChatProps) => {
   // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
   let filteredMessages = messages.filter((m) => {
-    if (m.channel !== stream) return false;
-
+    if (m.channel !== stream.toLowerCase()) return false;
+    
     const emoteThreshold = m.emotePercentage * 10;
     const meetsEmoteThreshold = emoteThreshold <= maxEmoteThreshold && emoteThreshold >= minEmoteThreshold;
     let meetsFilterThreshold = true;
@@ -56,14 +58,15 @@ const TwitchChat = (props: TwitchChatProps) => {
     return meetsEmoteThreshold && meetsFilterThreshold;
   });
 
-  // if (filteredMessages.length > MAX_MESSAGES) {
-  //   filteredMessages.splice(filteredMessages.length - MAX_MESSAGES + MESSAGE_THRESHOLD, MAX_MESSAGES);
-  // }
+  const extraMessages = filteredMessages.length % chunkSize;
+  filteredMessages.splice(0, filteredMessages.length - maxMessages - extraMessages);
 
   return (
     <div>
       <div>Total messages: { messages.length }</div>
       <div>Current messages: { filteredMessages.length }</div>
+      <div>MAX: <input type="number" value={maxMessages} onChange={(e) => setMaxMessages(parseInt(e.currentTarget.value) || 1)} /></div>
+      <div>CHUNK SIZE: <input type="number" value={chunkSize} onChange={(e) => setChunkSize(parseInt(e.currentTarget.value) || 1)} /></div>
       <div>
         Emote threshold:
         <div>
@@ -77,7 +80,7 @@ const TwitchChat = (props: TwitchChatProps) => {
         Chat Filter:
         <input value={filterText} onChange={onChangeFilterText} />
       </div>
-      <ChatWindow messages={filteredMessages} />
+      <ChatWindow messages={filteredMessages} chunkSize={chunkSize} />
     </div>
   )
 };

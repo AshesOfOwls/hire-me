@@ -7,7 +7,7 @@ import Worker from 'workers/twitchClient';
 
 import s from './Splitter.module.css';
 
-const TESTING_STREAM = 'hasanabi';
+const TESTING_STREAM = 'xqcow';
 
 const worker = new Worker();
 

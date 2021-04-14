@@ -8,18 +8,19 @@ import MessageChunk from './MessageChunk';
 import 'simplebar/dist/simplebar.min.css';
 import s from './ChatWindow.module.css';
 
-const MESSAGE_CHUNK_SIZE = 50;
-const PAUSE_THESHOLD = 70;
+const PAUSE_THESHOLD = 50;
 
 export interface ChatWindowProps {
   messages: TwitchMessage[],
+  chunkSize: number,
 }
 
 const ChatWindow = (props: ChatWindowProps) => {
-  const { messages } = props;
+  const { messages, chunkSize } = props;
 
   const [isPaused, setIsPaused] = useState(false);
-  const previousMessageCount = usePrevious(messages.length);
+  const [isHovered, setIsHovered] = useState(false);
+  const previousMessages = usePrevious(messages.map((m: any) => m.id).join());
   const chatWindowRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -37,34 +38,48 @@ const ChatWindow = (props: ChatWindowProps) => {
     const chatHeight = windowRef.offsetHeight;
     const scrollHeight = windowRef.scrollHeight;
 
-    const shouldPause = scrollHeight - chatHeight >= scrollTop + PAUSE_THESHOLD;
+    if (isHovered) {
+      const shouldPause = scrollHeight - chatHeight >= scrollTop + PAUSE_THESHOLD;
 
-    setIsPaused(shouldPause)
+      setIsPaused(shouldPause)
+    }
+  };
+
+  const onMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const onMouseLeave = () => {
+    setIsHovered(false);
   };
 
   useEffect(() => {
     if (isPaused) return;
     
-    if (previousMessageCount !== messages.length) {
+    if (previousMessages !== messages.map((m: any) => m.id).join()) {
       scrollToBottom();
     }
-  }, [isPaused, previousMessageCount, messages]);
+  }, [isPaused, previousMessages, messages]);
 
   useEffect(() => {
     const windowRef = chatWindowRef.current;
 
     if (windowRef) {
       windowRef.addEventListener('scroll', onScroll)
+      windowRef.addEventListener('mouseenter', onMouseEnter)
+      windowRef.addEventListener('mouseleave', onMouseLeave)
     }
-
+    
     return () => {
       if (!windowRef) return;
+      windowRef.removeEventListener('mouseenter', onMouseEnter)
+      windowRef.removeEventListener('mouseleave', onMouseLeave)
       windowRef.removeEventListener('scroll', onScroll);
     }
   })
 
   const splitMessages = messages.reduce((acc: any, cur: any, index) => {
-    const group = Math.floor(index / MESSAGE_CHUNK_SIZE);
+    const group = Math.floor(index / chunkSize);
     (acc[group] = acc[group] || []).push(cur);
 
     return acc;
@@ -74,7 +89,7 @@ const ChatWindow = (props: ChatWindowProps) => {
     scrollToBottom();
     setIsPaused(false);
   }
-  
+
   return (
     <div className={s.chatWindow}>
       <SimpleBar

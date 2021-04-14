@@ -5,6 +5,7 @@
   max-width: 400px;
   padding-bottom: 5px;
   position: relative;
+  overflow: auto;
 }
 
 .pauseMarker {
