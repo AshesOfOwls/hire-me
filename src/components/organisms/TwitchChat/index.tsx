@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
+import GaugeChart from 'react-gauge-chart';
 
+import s from './TwitchChat.module.css'
+ 
 const CHUNK_SIZE = 50;
 const MAX_MESSAGES = 1000;
 
@@ -62,10 +65,21 @@ const TwitchChat = (props: TwitchChatProps) => {
   const extraMessages = filteredMessages.length % chunkSize;
   filteredMessages.splice(0, filteredMessages.length - maxMessages - extraMessages);
 
+  const PPM = metadata ? metadata.pogsPerMinute : 0;
+
   return (
     <div>
       <div>Displayed/Total messages: { filteredMessages.length } / { messages.length }</div>
-      <div>POGS Per Minute (PPM): { metadata ? metadata.pogsPerMinute : 0 }</div>
+      <div>
+        POGS Per Minute (PPM): { PPM }
+        <GaugeChart
+          id="gauge-chart1"
+          percent={PPM / 100}
+          className={s.pogsPerMinute}
+          formatTextValue={(value) => `${value} Pogs per minute`}
+          style={{ width: '100px' }}
+        />
+      </div>
       <div>MAX: <input type="number" value={maxMessages} onChange={(e) => setMaxMessages(parseInt(e.currentTarget.value) || 1)} /></div>
       <div>CHUNK SIZE: <input type="number" value={chunkSize} onChange={(e) => setChunkSize(parseInt(e.currentTarget.value) || 1)} /></div>
       <div>
