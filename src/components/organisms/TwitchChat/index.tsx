@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 import GaugeChart from 'react-gauge-chart';
+import Filters from './Filters';
 
 import s from './TwitchChat.module.css'
  
@@ -17,36 +18,45 @@ export interface TwitchChatProps {
 const TwitchChat = (props: TwitchChatProps) => {
   const { stream, messages, metadata } = props;
 
-  const [chunkSize, setChunkSize] = useState(CHUNK_SIZE);
-  const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES);
-  const [minEmoteThreshold, setMinEmoteThreshold] = useState(0);
-  const [maxEmoteThreshold, setMaxEmoteThreshold] = useState(10);
-  const [filterText, setFilterText] = useState<string>('');
+  const [filters, setFilters] = useState({
+    maxMessages: MAX_MESSAGES,
+    chunkSize: CHUNK_SIZE,
+    minEmoteThreshold: 0,
+    maxEmoteThreshold: 10,
+    filterText: '',
+  });
+  // const [chunkSize, setChunkSize] = useState(CHUNK_SIZE);
+  // const [maxMessages, setMaxMessages] = useState(MAX_MESSAGES);
+  // const [minEmoteThreshold, setMinEmoteThreshold] = useState(0);
+  // const [maxEmoteThreshold, setMaxEmoteThreshold] = useState(10);
+  // const [filterText, setFilterText] = useState<string>('');
 
-  const onChangeMinThreshold = (e: React.FormEvent<HTMLInputElement>) => {
-    const val = parseInt(e.currentTarget.value);
+  // const onChangeMinThreshold = (e: React.FormEvent<HTMLInputElement>) => {
+  //   const val = parseInt(e.currentTarget.value);
 
-    if (val >= maxEmoteThreshold) return;
+  //   if (val >= maxEmoteThreshold) return;
 
-    setMinEmoteThreshold(parseInt(e.currentTarget.value));
-  };
+  //   setMinEmoteThreshold(parseInt(e.currentTarget.value));
+  // };
 
-  const onChangeMaxThreshold = (e: React.FormEvent<HTMLInputElement>) => {
-    const val = parseInt(e.currentTarget.value);
+  // const onChangeMaxThreshold = (e: React.FormEvent<HTMLInputElement>) => {
+  //   const val = parseInt(e.currentTarget.value);
 
-    if (val <= minEmoteThreshold) return;
+  //   if (val <= minEmoteThreshold) return;
 
-    setMaxEmoteThreshold(parseInt(e.currentTarget.value));
-  };
+  //   setMaxEmoteThreshold(parseInt(e.currentTarget.value));
+  // };
 
-  const onChangeFilterText = (e: React.FormEvent<HTMLInputElement>) => {
-    setFilterText(e.currentTarget.value);
-  }
+  // const onChangeFilterText = (e: React.FormEvent<HTMLInputElement>) => {
+  //   setFilterText(e.currentTarget.value);
+  // }
 
   // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
   // MOVE TO WORKER!!!!
+  const { maxMessages, chunkSize, maxEmoteThreshold, minEmoteThreshold, filterText } = filters;
+  
   let filteredMessages = messages.filter((m) => {
     if (m.channel !== stream.toLowerCase()) return false;
     
@@ -67,6 +77,10 @@ const TwitchChat = (props: TwitchChatProps) => {
 
   const PPM = metadata ? metadata.pogsPerMinute : 0;
 
+  const onChangeFilters = (newFilters: any) => {
+    setFilters(newFilters);
+  };
+
   return (
     <div>
       <div>Displayed/Total messages: { filteredMessages.length } / { messages.length }</div>
@@ -77,24 +91,10 @@ const TwitchChat = (props: TwitchChatProps) => {
           percent={PPM / 100}
           className={s.pogsPerMinute}
           formatTextValue={(value) => `${value} Pogs per minute`}
-          style={{ width: '100px' }}
+          style={{ width: '130px' }}
         />
       </div>
-      <div>MAX: <input type="number" value={maxMessages} onChange={(e) => setMaxMessages(parseInt(e.currentTarget.value) || 1)} /></div>
-      <div>CHUNK SIZE: <input type="number" value={chunkSize} onChange={(e) => setChunkSize(parseInt(e.currentTarget.value) || 1)} /></div>
-      <div>
-        Emote threshold:
-        <div>
-          Min: <input type="range" value={minEmoteThreshold} min={0} max={10} onChange={onChangeMinThreshold} step={1} />
-        </div>
-        <div>
-          Max: <input type="range" value={maxEmoteThreshold} min={0} max={10} onChange={onChangeMaxThreshold} step={1} />
-        </div>
-      </div>
-      <div>
-        Chat Filter:
-        <input value={filterText} onChange={onChangeFilterText} />
-      </div>
+      <Filters onChange={onChangeFilters} {...filters} />
       <ChatWindow messages={filteredMessages} chunkSize={chunkSize} />
     </div>
   )

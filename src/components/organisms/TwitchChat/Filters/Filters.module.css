@@ -1,0 +1,23 @@
+.filtersWrapper {
+  background-color: #080809;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.filters {
+  background-color: #19191A;
+  position: absolute;
+  display: none;
+  top: 100%;
+  z-index: 5;
+  padding: 15px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 3px #000;
+}
+
+.filters.isVisible {
+  display: block;
+}

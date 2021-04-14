@@ -14,3 +14,15 @@
 .warning {
   background: #CC3333;
 }
+
+.wrapper {
+  background: none;
+  border: none;
+  color: #dddddd;
+}
+
+.wrapper:hover {
+  color: #ffffff;
+  background: none;
+  border: none;
+}

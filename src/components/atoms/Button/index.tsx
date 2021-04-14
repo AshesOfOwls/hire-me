@@ -6,7 +6,7 @@ import s from './Button.module.css';
 export interface ButtonProps {
   children: React.ReactNode
   onClick: () => void
-  type?: undefined | 'warning'
+  type?: undefined | 'warning' | 'wrapper'
 }
 
 const Button = (props: ButtonProps) => {
