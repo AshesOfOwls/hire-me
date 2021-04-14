@@ -32,10 +32,12 @@ export interface TwitchClientWorker {
   subscribeToMetadata: (callback: any) => void,
   addMessage: (message: TwitchMessage, callback: any) => void,
   catalogMessageMetadata: (message: TwitchMessage) => void,
+  destroy: () => void,
   channelMetadata: any,
   hasSubscribed: boolean,
   hasSubscribedToMetadata: boolean,
   joinTimes: any,
+  metadataInterval: any,
 }
 
 const twitchClient: TwitchClientWorker = {
@@ -45,6 +47,7 @@ const twitchClient: TwitchClientWorker = {
   hasSubscribedToMetadata: false,
   joinTimes: {},
   channelMetadata: {},
+  metadataInterval: null,
   init(callback: any) {
     if (!['OPEN', 'CONNECTING'].includes(client.readyState())) {
       client.connect().then(callback);
@@ -90,8 +93,9 @@ const twitchClient: TwitchClientWorker = {
     if (this.hasSubscribedToMetadata) return;
 
     this.hasSubscribedToMetadata = true;
+    clearInterval(this.metadataInterval);
 
-    setInterval(() => {
+    this.metadataInterval = setInterval(() => {
       const metadata: any = {};
       
       Object.keys(this.joinTimes).forEach((channel) => {
@@ -134,6 +138,14 @@ const twitchClient: TwitchClientWorker = {
       this.channelEmotes = [...this.channelEmotes, ...emotes];
       callback();
     });
+  },
+  destroy() {
+    this.messages = [];
+    this.channelMetadata = {};
+    client.disconnect();
+    clearInterval(this.metadataInterval);
+
+    close(); // eslint-disable-line
   }
 };
 

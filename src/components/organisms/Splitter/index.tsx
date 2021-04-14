@@ -18,17 +18,10 @@ const INITIAL_TAB: SplitterTab = {
   channel: 'xqcow',
 }
 
-const worker = new Worker();
-
-const init = async (callback: any) => {
-  worker.init(Comlink.proxy(callback));
-}
-const subscribe = async (callback: any) => {
-  worker.subscribe(Comlink.proxy(callback));
-}
-const subscribeToMetadata = async (callback: any) => {
-  worker.subscribeToMetadata(Comlink.proxy(callback));
-}
+let worker: Worker | null = null;
+let init = async (callback: any) => {};
+let subscribe = async (callback: any) => {};
+let subscribeToMetadata = async (callback: any) => {};
 
 const Splitter = () => {
   const [messages, setMessages] = useState<TwitchMessage[]>([]);
@@ -37,20 +30,49 @@ const Splitter = () => {
   const [streamInputValue, setStreamInputValue] = useState('');
 
   useEffect(() => {
+    worker = new Worker();
+
+    init = async (callback: any) => {
+      if (!worker) return;
+      worker.init(Comlink.proxy(callback));
+    };
+    subscribe = async (callback: any) => {
+      if (!worker) return;
+      worker.subscribe(Comlink.proxy(callback));
+    };
+    subscribeToMetadata = async (callback: any) => {
+      if (!worker) return;
+      worker.subscribeToMetadata(Comlink.proxy(callback));
+    };
+
+    return () => {
+      if (!worker) return;
+
+      worker.destroy();
+      worker = null;
+    }
+  }, [])
+
+  useEffect(() => {
     init(() => {
       // @ts-ignore
       const uniqueTabs = [...new Set(tabs.map((tab) => tab.channel))];
-      uniqueTabs.forEach((tab) => worker.join(tab));
+      uniqueTabs.forEach((tab) => {
+        if (!worker) return;
+        worker.join(tab)
+      });
     });
     subscribe((message: TwitchMessage) => setMessages(m => [...m, message]));
     subscribeToMetadata((metadata: any) => setMetadata(metadata));
   });
-  
+
   const onInputChange = (e: React.FormEvent<HTMLInputElement>) => {
     setStreamInputValue(e.currentTarget.value);
   };
 
   const addTab = (channel: string) => {
+    if (!worker) return;
+
     const newTab: SplitterTab = {
       id: uuidv4(),
       channel,
