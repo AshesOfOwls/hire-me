@@ -13,18 +13,18 @@ const Message = React.memo((props: MessageProps) => {
 
   const text = message.emoteText.map((fragment: any, index: number) => {
     if (fragment.type === 'emote') {
-      return <Emote url={fragment.url} key={fragment.code + index} />
+      return <Emote url={fragment.url} key={`${fragment.code}${index}`} />
     }
 
     if (fragment.type === 'url') {
       return (
-        <a href={fragment.text} key={fragment.code + index} target="_blank" rel="noreferrer">
+        <a href={fragment.text} key={`${fragment.text}${index}`} target="_blank" rel="noreferrer">
           { fragment.text }
         </a>
       );
     }
 
-    return fragment.text;
+    return <span key={`${fragment.text}${index}`}>{ fragment.text }</span>;
   });
 
   const isAction = message.messageType === 'action';
