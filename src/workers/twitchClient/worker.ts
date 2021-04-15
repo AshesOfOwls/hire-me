@@ -66,9 +66,9 @@ const twitchClient: TwitchClientWorker = {
 
     this.hasSubscribed = true;
 
-    // client.on('action', (channel, userstate, message, self) => {
-    //   console.log(message, userstate)
-    // });
+    client.on('action', (channel, userstate, message, self) => {
+      console.log(message, userstate)
+    });
 
     client.on('message', (channel, tags, message) => {      
       const unixTimestamp = parseInt(tags['tmi-sent-ts'] || '0') / 1000;

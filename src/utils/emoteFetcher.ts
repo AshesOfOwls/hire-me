@@ -13,12 +13,19 @@ const getChannelId: any = async (channel: string) => {
 
 const getFFZEmotes = async (channel: String) => {
   try {
-    const emoteList = await fetch(`https://api.frankerfacez.com/v1/room/${channel}`).then((res) => res.json());
-    if (!emoteList.sets) return [];
-    const emoteSets = Object.keys(emoteList.sets);
-    let ffzEmotesArr: any = [];
-    emoteSets.map((e: any) => emoteList.sets[e].emoticons.map((em: any) => ffzEmotesArr.push({ code: em.name, url: `https:${em.urls[1]}` })));
-  
+    const globalEmoteList = await fetch(`https://api.frankerfacez.com/v1/set/global`).then((res) => res.json());
+    const channelEmoteList = await fetch(`https://api.frankerfacez.com/v1/room/${channel}`).then((res) => res.json());
+    if (!channelEmoteList.sets || !globalEmoteList.sets) return [];
+    const emoticons: any = Object.values({...globalEmoteList.sets, ...channelEmoteList.sets})
+      .reduce((accumulator: any, current: any) => (
+        accumulator = [...accumulator, ...current.emoticons]
+      ), []);
+
+      let ffzEmotesArr = emoticons.map((emote: any) => ({
+      code: emote.name,
+      url: `https:${emote.urls[1]}`,
+    }));
+
     return ffzEmotesArr;
   } catch {
     console.error(`Error loading FFZ global emotes.`);
@@ -30,6 +37,7 @@ const getTTVGlobalEmotes = async () => {
   try {
     const global_chan_id = 0;
     const emoteList = await fetch(`https://api.twitchemotes.com/api/v4/channels/${global_chan_id}`).then((res) => res.json());
+    console.log("Global emotes", emoteList)
     let globalTTVEmotesArr: any = [];
     emoteList.emotes.map((e: any) => globalTTVEmotesArr.push({ code: e.code, url: `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0` }));
     return globalTTVEmotesArr;
