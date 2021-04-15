@@ -7,6 +7,8 @@ import Icon from 'components/atoms/Icon';
 import s from './Filters.module.css'
 
 export interface FiltersProps {
+  totalMessages: number
+  displayedMessages: number
   maxMessages: number
   chunkSize: number
   minEmoteThreshold: number
@@ -14,10 +16,13 @@ export interface FiltersProps {
   filterText: string
   onChange: (filters: any) => void,
   onClone: (filters: any) => void,
+  onDelete: () => void,
 }
 
 const Filters = React.memo((props: FiltersProps) => {
   const {
+    totalMessages,
+    displayedMessages,
     maxMessages,
     chunkSize,
     minEmoteThreshold,
@@ -25,6 +30,7 @@ const Filters = React.memo((props: FiltersProps) => {
     filterText,
     onChange,
     onClone,
+    onDelete,
   } = props;
   
   const [showFilters, setShowFilters] = useState(false);
@@ -97,13 +103,21 @@ const Filters = React.memo((props: FiltersProps) => {
 
   return (
     <div className={s.filtersWrapper}>
-      <Button onClick={handleClone} type="wrapper">
-        <Icon name="clone" />
-      </Button>
+      { displayedMessages } / { totalMessages }
 
-      <Button onClick={toggleFilters} type="wrapper">
-        <Icon name="filter" />
-      </Button>
+      <div className={s.actions}>
+        <Button onClick={onDelete} type="wrapper">
+          <Icon name="trash" />
+        </Button>
+
+        <Button onClick={handleClone} type="wrapper">
+          <Icon name="clone" />
+        </Button>
+
+        <Button onClick={toggleFilters} type="wrapper">
+          <Icon name="filter" />
+        </Button>
+      </div>
 
       <div className={classnames(s.filters, { [s.isVisible]: showFilters })} ref={filtersRef}>
         <div>

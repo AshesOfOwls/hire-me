@@ -89,10 +89,6 @@ const Splitter = () => {
     setStreamInputValue('');
   };
 
-  const onDuplicate = (tab: string) => {
-    addTab(tab);
-  };
-
   const onDeleteTab = (index: number) => {
     const newTabs = [...tabs]
     newTabs.splice(index, 1);
@@ -114,13 +110,12 @@ const Splitter = () => {
         {tabs.map((tab, index) => 
           <div className={s.tab} key={tab.id}>
             <h3>{ tab.channel } Twitch Chat:</h3>
-            <Button onClick={() => onDuplicate(tab.channel)}>New {tab.channel} tab</Button>
-            <Button onClick={() => onDeleteTab(index)} type="warning">Delete</Button>
             <TwitchChat
               stream={tab.channel}
               messages={messages}
               metadata={metadata[tab.channel]}
               onClone={onClone}
+              onDelete={() => onDeleteTab(index)}
               preFilters={tab.filters}
             />
           </div>

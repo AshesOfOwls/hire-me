@@ -23,6 +23,7 @@
     "react-gauge-chart": "^0.3.0",
     "react-in-viewport": "^1.0.0-alpha.16",
     "react-scripts": "4.0.3",
+    "react-use-comlink": "^2.0.1",
     "simplebar-react": "^2.3.0",
     "tmi.js": "^1.7.5",
     "twitch": "^4.5.5",

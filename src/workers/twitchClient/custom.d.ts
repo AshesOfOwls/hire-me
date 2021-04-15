@@ -8,6 +8,7 @@ declare module 'comlink-loader!*' {
     subscribeToMetadata(callback: any): Promise<string>;
     join(channel: string): Promise<string>;
     init(callback: any): Promise<string>;
+    filter(messages: any, filters: any, channel: string, callback: any): Promise<string>;
     destroy(): Promise<string>;
   }
 

@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import * as Comlink from 'comlink';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 import GaugeChart from 'react-gauge-chart';
+import Worker from 'workers/filterMessages';
 import Filters from './Filters';
 
 import s from './TwitchChat.module.css'
@@ -9,16 +11,25 @@ import s from './TwitchChat.module.css'
 const CHUNK_SIZE = 50;
 const MAX_MESSAGES = 1000;
 
+const worker = new Worker();
+const filterMessages = async (messages: any, filters: any, channel: string, callback: any) => {
+  if (!worker) return;
+  worker.filter(messages, filters, channel, Comlink.proxy(callback));
+};
+
 export interface TwitchChatProps {
   stream: string,
   messages: TwitchMessage[],
   metadata?: any,
   onClone: (filters: any) => void,
+  onDelete: () => void,
   preFilters?: any,
 }
 
 const TwitchChat = (props: TwitchChatProps) => {
-  const { stream, messages, metadata, onClone, preFilters } = props;
+  const { stream, messages, metadata, onClone, preFilters, onDelete } = props;
+
+  const [filteredMessages, setFilteredMessages] = useState(messages);
 
   const [filters, setFilters] = useState(preFilters || {
     maxMessages: MAX_MESSAGES,
@@ -27,29 +38,15 @@ const TwitchChat = (props: TwitchChatProps) => {
     maxEmoteThreshold: 10,
     filterText: '',
   });
-
-  // MOVE TO WORKER!!!!
-  const { maxMessages, chunkSize, maxEmoteThreshold, minEmoteThreshold, filterText } = filters;
   
-  let filteredMessages = messages.filter((m) => {
-    if (m.channel !== stream.toLowerCase()) return false;
-    
-    const emoteThreshold = m.emotePercentage * 10;
-    const meetsEmoteThreshold = emoteThreshold <= maxEmoteThreshold && emoteThreshold >= minEmoteThreshold;
-    let meetsFilterThreshold = true;
-    try {
-      meetsFilterThreshold = Boolean(m.text.match(filterText));
-    } catch {
-      meetsFilterThreshold = true;
-    }
+  useEffect(() => {
+    filterMessages(messages, filters, stream, setFilteredMessages);
+  }, [messages, filters, stream])
 
-    return meetsEmoteThreshold && meetsFilterThreshold;
-  });
-
-  const extraMessages = filteredMessages.length % chunkSize;
-  filteredMessages.splice(0, filteredMessages.length - maxMessages - extraMessages);
+  const { chunkSize } = filters;
 
   const PPM = metadata ? metadata.pogsPerMinute : 0;
+  const PPMPercent = (PPM / 100) > 1 ? 1 : (PPM / 100);
 
   const onChangeFilters = (newFilters: any) => {
     setFilters(newFilters);
@@ -64,20 +61,21 @@ const TwitchChat = (props: TwitchChatProps) => {
 
   return (
     <div>
-      <div>Displayed/Total messages: { filteredMessages.length } / { messages.length }</div>
-      <div>
-        POGS Per Minute (PPM): { PPM }
+      <div className={s.ppmWrapper}>
         <GaugeChart
           id="gauge-chart1"
-          percent={PPM / 100}
+          percent={PPMPercent}
           className={s.pogsPerMinute}
-          formatTextValue={(value) => `${value} Pogs per minute`}
-          style={{ width: '130px' }}
+          formatTextValue={(value) => `${PPM} Pogs per minute`}
+          style={{ width: '240px' }}
         />
       </div>
       <Filters
+        totalMessages={messages.length}
+        displayedMessages={filteredMessages.length}
         onChange={onChangeFilters}
         onClone={handleClone}
+        onDelete={onDelete}
         {...filters}
       />
       <ChatWindow messages={filteredMessages} chunkSize={chunkSize} />

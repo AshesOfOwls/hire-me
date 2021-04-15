@@ -1,10 +1,10 @@
 .filtersWrapper {
   background-color: #080809;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   position: relative;
+  padding: 5px 10px;
 }
 
 .filters {
@@ -20,4 +20,8 @@
 
 .filters.isVisible {
   display: block;
+}
+
+.actions {
+  display: flex;
 }

@@ -12014,6 +12014,11 @@ react-textarea-autosize@^8.3.0:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
+react-use-comlink@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-use-comlink/-/react-use-comlink-2.0.1.tgz#8e5f835bebb3b8606a8b7202f7e0840f5b406391"
+  integrity sha512-YDN2wJN2UY7IJB3rDTF9e1Z7Ffo8BtDCeHzcB3vTBfTZ0R/cdi6PgOpPZ4G2Fg2xDdxJL4hwovFboXtdsfQH1Q==
+
 react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
