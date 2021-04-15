@@ -82,7 +82,7 @@ const twitchClient: TwitchClientWorker = {
         emoteText: formatted,
         username: tags['display-name'],
         usernameColor: tags.color,
-        time: format(fromUnixTime(unixTimestamp), 'hh:mm'),
+        time: format(fromUnixTime(unixTimestamp), 'h:mm'),
         emotePercentage: emoteCount ? emoteCount / (emoteCount + wordCount) : 0,
       };
 
