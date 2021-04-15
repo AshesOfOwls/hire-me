@@ -9,7 +9,7 @@ import Filters from './Filters';
 import s from './TwitchChat.module.css'
  
 const CHUNK_SIZE = 50;
-const MAX_MESSAGES = 1000;
+const MAX_MESSAGES = 150;
 
 const worker = new Worker();
 const filterMessages = async (messages: any, filters: any, channel: string, callback: any) => {
@@ -66,7 +66,7 @@ const TwitchChat = (props: TwitchChatProps) => {
           id="gauge-chart1"
           percent={PPMPercent}
           className={s.pogsPerMinute}
-          formatTextValue={(value) => `${PPM} Pogs per minute`}
+          formatTextValue={(value) => `${Math.round(PPM)} Pogs per minute`}
           style={{ width: '240px' }}
         />
       </div>

@@ -53,10 +53,14 @@ const getTTVEmotes = async (channelId: String) => {
 
 const getBTTVEmotes = async (channelId: String) => {
   try {
-    const emoteList = await fetch(`https://api.betterttv.net/3/cached/users/twitch/${channelId}`).then((res) => res.json());
-    if (!emoteList.channelEmotes) return [];
+    const channelEmoteList = await fetch(`https://api.betterttv.net/3/cached/users/twitch/${channelId}`).then((res) => res.json());
+    const globalEmoteList = await fetch(`https://api.betterttv.net/3/cached/emotes/global`).then((res) => res.json());
+
+    if (!channelEmoteList.channelEmotes || !globalEmoteList.length) return [];
+    const emoteList = [...channelEmoteList.channelEmotes, ...globalEmoteList];
     let bttvEmotesArr: any = [];
-    emoteList.channelEmotes.map((data: any) =>
+
+    emoteList.map((data: any) =>
       bttvEmotesArr.push({
         code: data.code,
         url: `https://cdn.betterttv.net/emote/${data.id}/1x`,
