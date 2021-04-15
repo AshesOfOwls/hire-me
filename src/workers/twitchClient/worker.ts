@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink';
 import tmi from 'tmi.js';
-import emoteText from 'utils/emoteText';
+import parseTwitchChat from 'utils/parseTwitchChat';
 import { TwitchMessage } from 'types/TwitchMessage';
 import { format, fromUnixTime } from 'date-fns';
 import emoteFetcher from 'utils/emoteFetcher';
@@ -72,7 +72,7 @@ const twitchClient: TwitchClientWorker = {
 
     client.on('message', (channel, tags, message) => {      
       const unixTimestamp = parseInt(tags['tmi-sent-ts'] || '0') / 1000;
-      const { formatted, emoteCount, wordCount } = emoteText({ text: message, emoteList: this.channelEmotes });
+      const { formatted, emoteCount, wordCount } = parseTwitchChat({ text: message, emoteList: this.channelEmotes });
 
       const newMessage: TwitchMessage = {
         id: tags.id,

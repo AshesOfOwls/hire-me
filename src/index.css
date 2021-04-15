@@ -17,3 +17,13 @@ body {
   background: rgb(14, 14, 16);
   color: rgb(239, 239, 241);
 }
+
+a {
+  color: #a970ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  background: rgba(255, 255, 255, 0.2);
+}

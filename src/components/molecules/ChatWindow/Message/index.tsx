@@ -16,6 +16,14 @@ const Message = React.memo((props: MessageProps) => {
       return <Emote url={fragment.url} key={fragment.code + index} />
     }
 
+    if (fragment.type === 'url') {
+      return (
+        <a href={fragment.text} key={fragment.code + index} target="_blank" rel="noreferrer">
+          { fragment.text }
+        </a>
+      );
+    }
+
     return fragment.text;
   });
 
