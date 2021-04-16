@@ -20,3 +20,13 @@
   color: #adadb8;
   margin-right: .5em;
 }
+
+.badges {
+  margin-right: 3px;
+  position: relative;
+  top: -2px;
+}
+
+.badge + .badge {
+  margin-left: 3px;
+}

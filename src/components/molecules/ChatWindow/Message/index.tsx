@@ -11,7 +11,7 @@ export interface MessageProps {
 const Message = React.memo((props: MessageProps) => {
   const { message } = props;
 
-  const text = message.emoteText.map((fragment: any, index: number) => {
+  const text = message.emoteText ? message.emoteText.map((fragment: any, index: number) => {
     if (fragment.type === 'emote') {
       return <Emote url={fragment.url} key={`${fragment.code}${index}`} />
     }
@@ -25,13 +25,20 @@ const Message = React.memo((props: MessageProps) => {
     }
 
     return <span key={`${fragment.text}${index}`}>{ fragment.text }</span>;
-  });
+  }) : message.text;
 
   const isAction = message.messageType === 'action';
 
+  const badges = message.formattedBadges || [];
+  
   return (
     <div className={s.message}>
       <span className={s.timestamp}>{ message.time }</span>
+      <span className={s.badges}>
+        {badges.map((badge: any) => (
+          <span className={s.badge} key={badge.url}><Emote url={badge.url} /></span>
+        ))}
+      </span>
       <div className={s.username} style={{ color: message.usernameColor }}>
         { message.username }
       </div>

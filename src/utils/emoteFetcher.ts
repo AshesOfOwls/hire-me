@@ -33,20 +33,6 @@ const getFFZEmotes = async (channel: String) => {
   }
 };
 
-const getTTVGlobalEmotes = async () => {
-  try {
-    const global_chan_id = 0;
-    const emoteList = await fetch(`https://api.twitchemotes.com/api/v4/channels/${global_chan_id}`).then((res) => res.json());
-    console.log("Global emotes", emoteList)
-    let globalTTVEmotesArr: any = [];
-    emoteList.emotes.map((e: any) => globalTTVEmotesArr.push({ code: e.code, url: `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0` }));
-    return globalTTVEmotesArr;
-  } catch {
-    console.error(`Error loading TTV global emotes.`);
-    return [];
-  }
-};
-
 const getTTVEmotes = async (channelId: String) => {
   try {
     const emoteList = await fetch(`https://api.twitchemotes.com/api/v4/channels/${channelId}`).then((res) => res.json());
@@ -87,9 +73,8 @@ const emoteFetcher = async (channelName: string): Promise<any> => {
   const ttvEmotes = getTTVEmotes(channelId);
   const bttvEmotes = getBTTVEmotes(channelId);
   const ffzEmotes = getFFZEmotes(channelName);
-  const ttvGlobalEmotes = getTTVGlobalEmotes();
 
-  return Promise.all([ttvGlobalEmotes, ttvEmotes, bttvEmotes, ffzEmotes]).then((emotes) => {
+  return Promise.all([ttvEmotes, bttvEmotes, ffzEmotes]).then((emotes) => {
     const parsedEmotes: any = [];
     emotes.map((emotes: any) => parsedEmotes.push(...emotes));
     return parsedEmotes;

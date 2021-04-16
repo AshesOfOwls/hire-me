@@ -8,6 +8,10 @@ import Worker from 'workers/twitchClient';
 
 import s from './Splitter.module.css';
 
+export interface ChannelMessages {
+  [key: string]: TwitchMessage[],
+}
+
 export interface SplitterTab {
   id: string,
   channel: string,
@@ -16,7 +20,7 @@ export interface SplitterTab {
 
 const INITIAL_TAB: SplitterTab = {
   id: uuidv4(),
-  channel: 'loltyler1',
+  channel: 'shroud',
 }
 
 let worker: Worker | null = null;
@@ -25,7 +29,7 @@ let subscribe = async (callback: any) => {};
 let subscribeToMetadata = async (callback: any) => {};
 
 const Splitter = () => {
-  const [messages, setMessages] = useState<TwitchMessage[]>([]);
+  const [channelMessages, setChannelMessages] = useState<ChannelMessages>({});
   const [tabs, setTabs] = useState<SplitterTab[]>([INITIAL_TAB]);
   const [metadata, setMetadata]: any = useState({});
   const [streamInputValue, setStreamInputValue] = useState('');
@@ -63,9 +67,9 @@ const Splitter = () => {
         worker.join(tab)
       });
     });
-    subscribe((message: TwitchMessage) => setMessages(m => [...m, message]));
+    subscribe((messages: ChannelMessages) => setChannelMessages(messages));
     subscribeToMetadata((metadata: any) => setMetadata(metadata));
-  });
+  }, []);
 
   const onInputChange = (e: React.FormEvent<HTMLInputElement>) => {
     setStreamInputValue(e.currentTarget.value);
@@ -112,7 +116,7 @@ const Splitter = () => {
             <h3>{ tab.channel } Twitch Chat:</h3>
             <TwitchChat
               stream={tab.channel}
-              messages={messages}
+              messages={channelMessages[tab.channel] || []}
               metadata={metadata[tab.channel]}
               onClone={onClone}
               onDelete={() => onDeleteTab(index)}

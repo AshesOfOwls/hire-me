@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TwitchMessage } from 'types/TwitchMessage';
 import classnames from 'classnames';
 import usePrevious from 'hooks/usePrevious';
+import debounce from 'lodash.debounce';
 import SimpleBar from 'simplebar-react';
 import MessageChunk from './MessageChunk';
 
@@ -63,9 +64,10 @@ const ChatWindow = (props: ChatWindowProps) => {
 
   useEffect(() => {
     const windowRef = chatWindowRef.current;
+    const debouncedScroll = debounce(onScroll, 50);
 
     if (windowRef) {
-      windowRef.addEventListener('scroll', onScroll)
+      windowRef.addEventListener('scroll', debouncedScroll)
       windowRef.addEventListener('mouseenter', onMouseEnter)
       windowRef.addEventListener('mouseleave', onMouseLeave)
     }
@@ -74,7 +76,7 @@ const ChatWindow = (props: ChatWindowProps) => {
       if (!windowRef) return;
       windowRef.removeEventListener('mouseenter', onMouseEnter)
       windowRef.removeEventListener('mouseleave', onMouseLeave)
-      windowRef.removeEventListener('scroll', onScroll);
+      windowRef.removeEventListener('scroll', debouncedScroll);
     }
   })
 
@@ -91,16 +93,16 @@ const ChatWindow = (props: ChatWindowProps) => {
   }
 
   return (
-    <div className={s.chatWindow}>
-      <SimpleBar
+    <div className={s.chatWindow} ref={chatWindowRef}>
+      {/* <SimpleBar
         autoHide
         style={{ height: '100%' }}
         scrollableNodeProps={{ ref: chatWindowRef }}
-      >
-        {splitMessages.map((messages: any, index: number) => (
-          <MessageChunk messages={messages} key={`chunk${index}`} />
-        ))}
-      </SimpleBar>
+      > */}
+      {splitMessages.map((messages: any, index: number) => (
+        <MessageChunk messages={messages} key={`chunk${index}`} />
+      ))}
+      {/* </SimpleBar> */}
       <div
         className={classnames(s.pauseMarker, { [s.isVisible]: isPaused })}
         onClick={unPause}

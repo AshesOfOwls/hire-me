@@ -3,10 +3,26 @@ const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9(
 export interface Props {
   text: string
   emoteList: any
+  badges: string[]
+  badgeList: any
 };
 
-const parseTwitchChat = (props: Props): { formatted: any[], emoteCount: number, wordCount: number } => {
-  const { text, emoteList } = props;
+const addSpaces = (splitText: any[]) => {
+  return splitText.reduce((accumulator: any, next: any, index: number, array: any) => {
+    accumulator.push(next);
+    if (index !== array.length - 1) {
+      accumulator.push({
+        type: 'text',
+        text: ' ',
+      });
+    } 
+
+    return accumulator;
+  }, []);
+};
+
+const parseTwitchChat = (props: Props): { formattedText: any[], formattedBadges: any[], emoteCount: number, wordCount: number } => {
+  const { text, emoteList, badges, badgeList } = props;
 
   let emoteCount = 0;
   let wordCount = 0;
@@ -37,19 +53,19 @@ const parseTwitchChat = (props: Props): { formatted: any[], emoteCount: number, 
     };
   });
 
-  const withSpaces = formatted.reduce((accumulator: any, next: any, index: number, array: any) => {
-    accumulator.push(next);
-    if (index !== array.length - 1) {
-      accumulator.push({
-        type: 'text',
-        text: ' ',
-      });
-    } 
+  const withSpaces = addSpaces(formatted);
 
-    return accumulator;
-  }, []);
+  let formattedBadges: any = [];
 
-  return { formatted: withSpaces, emoteCount, wordCount };
+  if (badges.length > 0) {
+    formattedBadges = badges.reduce((accumulator: any, badge: any) => {
+      const foundBadge = badgeList.find((storedBadge: any) => storedBadge.code === badge);
+      if (foundBadge) accumulator.push(foundBadge);
+      return accumulator;
+    }, []);
+  }
+
+  return { formattedText: withSpaces, emoteCount, wordCount, formattedBadges };
 };
 
 export default parseTwitchChat;
