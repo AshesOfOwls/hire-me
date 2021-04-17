@@ -3,6 +3,7 @@ import * as Comlink from 'comlink';
 import { TwitchMessage } from 'types/TwitchMessage';
 import ChatWindow from 'components/molecules/ChatWindow';
 import GaugeChart from 'react-gauge-chart';
+import { useDebounce } from 'use-lodash-debounce'
 import Worker from 'workers/filterMessages';
 import Filters from './Filters';
 
@@ -38,10 +39,13 @@ const TwitchChat = (props: TwitchChatProps) => {
     maxEmoteThreshold: 10,
     filterText: '',
   });
-  
+
+  const debouncedFilters = useDebounce(filters, 100);
+
+  // THERE IS A PROBLEM HERE (messages in deps)
   useEffect(() => {
-    filterMessages(messages, filters, stream, setFilteredMessages);
-  }, [messages, filters, stream])
+    filterMessages(messages, debouncedFilters, stream, setFilteredMessages);
+  }, [messages, debouncedFilters, stream])
 
   const { chunkSize } = filters;
 
@@ -51,6 +55,7 @@ const TwitchChat = (props: TwitchChatProps) => {
   const onChangeFilters = (newFilters: any) => {
     setFilters(newFilters);
   };
+
 
   const handleClone = (filters: any) => {
     onClone({

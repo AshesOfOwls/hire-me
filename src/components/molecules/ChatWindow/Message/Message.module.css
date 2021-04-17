@@ -35,10 +35,12 @@
 .altText {
   color: #adadb8;
   margin: .5rem 0 .1rem;
+  font-size: 12px;
   display: none;
 }
 
-.largeAlt {
+.largeAlt .altText {
+  font-size: 13px;
   margin: .5rem 0;
 }
 

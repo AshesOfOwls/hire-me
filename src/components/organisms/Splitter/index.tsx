@@ -20,7 +20,7 @@ export interface SplitterTab {
 
 const INITIAL_TAB: SplitterTab = {
   id: uuidv4(),
-  channel: 'summit1g',
+  channel: 'hasanabi',
 }
 
 let worker: Worker | null = null;

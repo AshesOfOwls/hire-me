@@ -30,6 +30,7 @@ const ChatWindow = (props: ChatWindowProps) => {
     chatWindowRef.current.scrollTop = 9999999;
   }
 
+  // Can this get moved to worker or will offsetHeight be affected by the windowRef being passed in?
   const onScroll = () => {
     const windowRef = chatWindowRef.current;
 

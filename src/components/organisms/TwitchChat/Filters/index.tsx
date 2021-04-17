@@ -32,7 +32,7 @@ const Filters = React.memo((props: FiltersProps) => {
     onClone,
     onDelete,
   } = props;
-  
+
   const [showFilters, setShowFilters] = useState(false);
   const filtersRef = useRef<HTMLDivElement>(null);
 

@@ -7,6 +7,8 @@ import emoteFetcher from 'utils/emoteFetcher';
 import badgeFetcher from 'utils/badgeFetcher';
 import { differenceInMinutes } from 'date-fns';
 
+const MAX_STORED_MESSAGES = 300;
+const MESSAGE_TRUNK = 50;
 const MESSAGE_INTERVAL = 50;
 
 const client = new tmi.Client({
@@ -67,8 +69,8 @@ const twitchClient: TwitchClientWorker = {
   addMessage(message, callback) {
     this.catalogMessageMetadata(message);
     const oldMessages = this.channelMessages[message.channel] || [];
-    if (oldMessages.length > 500) {
-      oldMessages.splice(0, 50)
+    if (oldMessages.length > MAX_STORED_MESSAGES) {
+      oldMessages.splice(0, MESSAGE_TRUNK)
     }
 
     this.channelMessages[message.channel] = [...oldMessages, message];
@@ -122,7 +124,7 @@ const twitchClient: TwitchClientWorker = {
 
       this.parseTwitchEmotes(message, tags.emotes);
 
-      console.log("is highlighted?", message, tags)
+      // console.log("is highlighted?", message, tags)
       const { formattedText, formattedBadges, emoteCount, wordCount } = parseTwitchChat({
         text: message,
         emoteList: this.channelEmotes,
