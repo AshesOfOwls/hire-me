@@ -90,6 +90,7 @@ const twitchClient: TwitchClientWorker = {
         id: tags.id,
         channel: channel.replace('#', ''),
         messageType: tags['message-type'],
+        messageId: tags['msg-id'],
         username,
         text: "OMG A TEST SUB HAPPENED",
         time: format(fromUnixTime(unixTimestamp), 'h:mm'),
@@ -105,6 +106,7 @@ const twitchClient: TwitchClientWorker = {
       const newMessage: TwitchMessage = {
         id: tags.id,
         channel: channel.replace('#', ''),
+        messageId: tags['msg-id'],
         messageType: tags['message-type'],
         username,
         text: "OMG A TEST rESUB HAPPENED",
@@ -120,10 +122,11 @@ const twitchClient: TwitchClientWorker = {
 
       this.parseTwitchEmotes(message, tags.emotes);
 
+      console.log("is highlighted?", message, tags)
       const { formattedText, formattedBadges, emoteCount, wordCount } = parseTwitchChat({
         text: message,
         emoteList: this.channelEmotes,
-        badges: Object.keys(badges),
+        badges,
         badgeList: this.channelBadges,
       });
 
@@ -131,10 +134,13 @@ const twitchClient: TwitchClientWorker = {
         id: tags.id,
         channel: channel.replace('#', ''),
         messageType: tags['message-type'],
+        messageId: tags['msg-id'],
         text: message,
         emoteText: formattedText,
         username: tags['display-name'],
         usernameColor: tags.color,
+        replyName: tags['reply-parent-display-name'],
+        replyMessage: tags['reply-parent-msg-body'],
         time: format(fromUnixTime(unixTimestamp), 'h:mm'),
         emotePercentage: emoteCount ? emoteCount / (emoteCount + wordCount) : 0,
         badges: Object.keys(badges),

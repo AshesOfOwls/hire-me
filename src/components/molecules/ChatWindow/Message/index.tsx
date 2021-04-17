@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import { TwitchMessage } from 'types/TwitchMessage';
 import Emote from 'components/atoms/Emote';
 
@@ -28,24 +29,34 @@ const Message = React.memo((props: MessageProps) => {
   }) : message.text;
 
   const isAction = message.messageType === 'action';
+  const isReply = message.replyName;
+  const isSubOnlyReply = message.messageId === 'skip-subs-mode-message';
 
   const badges = message.formattedBadges || [];
-  
+
+  const showAltText = isReply || isSubOnlyReply;
+
   return (
-    <div className={s.message}>
-      <span className={s.timestamp}>{ message.time }</span>
-      <span className={s.badges}>
-        {badges.map((badge: any) => (
-          <span className={s.badge} key={badge.url}><Emote url={badge.url} /></span>
-        ))}
-      </span>
-      <div className={s.username} style={{ color: message.usernameColor }}>
-        { message.username }
+    <div className={classnames(s.message, { [s.showAltText]: showAltText, [s.largeAlt]: isSubOnlyReply })}>
+      <div className={s.altText}>
+        { isSubOnlyReply && "Redeemed Send a Message in Sub-Only Mode" }
+        { isReply && `Replying to @${message.replyName}: ${message.replyMessage}`}
       </div>
-      <span className={s.separator}>{!isAction && ':'} </span>
-      <span style={{ color: isAction ? message.usernameColor : 'inherit' }}>
-        { text }
-      </span>
+      <div>
+        <span className={s.timestamp}>{ message.time }</span>
+        <span className={s.badges}>
+          {badges.map((badge: any) => (
+            <span className={s.badge} key={badge.url}><Emote url={badge.url} /></span>
+          ))}
+        </span>
+        <div className={s.username} style={{ color: message.usernameColor }}>
+          { message.username }
+        </div>
+        <span className={s.separator}>{!isAction && ':'} </span>
+        <span style={{ color: isAction ? message.usernameColor : 'inherit' }}>
+          { text }
+        </span>
+      </div>
     </div>
   );
 });

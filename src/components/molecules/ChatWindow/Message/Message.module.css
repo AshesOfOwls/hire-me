@@ -30,3 +30,18 @@
 .badge + .badge {
   margin-left: 3px;
 }
+
+/* MESSAGE ID TYPES */
+.altText {
+  color: #adadb8;
+  margin: .5rem 0 .1rem;
+  display: none;
+}
+
+.largeAlt {
+  margin: .5rem 0;
+}
+
+.showAltText .altText {
+  display: block;
+}

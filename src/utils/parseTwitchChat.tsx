@@ -3,7 +3,7 @@ const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9(
 export interface Props {
   text: string
   emoteList: any
-  badges: string[]
+  badges: any
   badgeList: any
 };
 
@@ -57,9 +57,11 @@ const parseTwitchChat = (props: Props): { formattedText: any[], formattedBadges:
 
   let formattedBadges: any = [];
 
-  if (badges.length > 0) {
-    formattedBadges = badges.reduce((accumulator: any, badge: any) => {
-      const foundBadge = badgeList.find((storedBadge: any) => storedBadge.code === badge);
+  const badgeKeys = Object.keys(badges);
+  if (badgeKeys.length > 0) {
+    formattedBadges = badgeKeys.reduce((accumulator: any, badgeCode: any) => {
+      const foundBadge = badgeList.find((storedBadge: any) => storedBadge.code === badgeCode);
+
       if (foundBadge) accumulator.push(foundBadge);
       return accumulator;
     }, []);
